@@ -624,6 +624,9 @@ function enableAutoAPMode() {
 
 function displaySuccess() {
 	echo -e "${green}MudPi installed successfully!"
+	echo "--"
+	echo -e "${maroon}Add mudpi.conf to /etc/mudpi/core before rebooting"
+	echo "--"
 	echo "It is recommended to reboot the system now. 'sudo reboot'"
 	if [ "$force_yes" == 1 ]; then
 		sudo reboot || log_error "Unable to reboot"
@@ -658,6 +661,7 @@ function installMudpi() {
 	installDefaultConfigs
 	sudo usermod -a -G www-data pi
 	sudo usermod -a -G video,gpio,spi,i2c www-data
+	sudo chmod 775 /etc/mudpi/logs
 	updateHostsFile
 	updateSudoersFile
 	updateHostname
