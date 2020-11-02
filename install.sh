@@ -99,11 +99,11 @@ version_msg="Unknown Raspbian Version"
 if [ "$rasp_version" -eq "10" ]; then
 	version_msg="Raspbian 10.0 (Buster)"
 	php_version="7.3"
-	php_package="php${php_version} php${php_version}-cgi php${php_version}-common php${php_version}-cli php${php_version}-fpm php${php_version}-mbstring php${php_version}-mysql php${php_version}-opcache php${php_version}-curl php${php_version}-gd php${php_version}-curl php${php_version}-zip php${php_version}-xml "
+	php_package="php${php_version} php${php_version}-cgi php${php_version}-common php${php_version}-cli php${php_version}-fpm php${php_version}-mbstring php${php_version}-mysql php${php_version}-opcache php${php_version}-curl php${php_version}-gd php${php_version}-curl php${php_version}-zip php${php_version}-xml php-redis"
 elif [ "$rasp_version" -eq "9" ]; then
 	version_msg="Raspbian 9.0 (Stretch)" 
 	php_version="7.3"
-	php_package="php${php_version} php${php_version}-cgi php${php_version}-common php${php_version}-cli php${php_version}-fpm php${php_version}-mbstring php${php_version}-mysql php${php_version}-opcache php${php_version}-curl php${php_version}-gd php${php_version}-curl php${php_version}-zip php${php_version}-xml "
+	php_package="php${php_version} php${php_version}-cgi php${php_version}-common php${php_version}-cli php${php_version}-fpm php${php_version}-mbstring php${php_version}-mysql php${php_version}-opcache php${php_version}-curl php${php_version}-gd php${php_version}-curl php${php_version}-zip php${php_version}-xml php-redis"
 elif [ "$rasp_version" -lt "9" ]; then
 	echo "Raspbian ${rasp_version} is unsupported. Please upgrade."
 	exit 1
@@ -185,7 +185,7 @@ function installDependencies()
 	if [ -f "/usr/local/bin/composer" ]; then
 		log_info "Composer already installed!"
 	else
-		sudo wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | sudo php -- --quiet --install-dir=/usr/local/bin --filename=composer || log_error "Problem installing composer"
+		sudo wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | sudo php -- --quiet --install-dir=/home/$USER/.local/bin --filename=composer || log_error "Problem installing composer"
 	fi
 	rm composer-setup.php
 	sudo apt-get install redis-server -y || log_error "Unable to install redis"
