@@ -185,7 +185,9 @@ function installDependencies()
 	if [ -f "/usr/local/bin/composer" ]; then
 		log_info "Composer already installed!"
 	else
-		sudo wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | sudo php -- --quiet --install-dir=/home/$USER/.local/bin --filename=composer || log_error "Problem installing composer"
+		mkdir -p $HOME/.local/bin
+		sudo wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | sudo php -- --quiet --install-dir=$HOME/.local/bin --filename=composer || log_error "Problem installing composer"
+		export PATH="$HOME/.local/bin:$PATH"
 	fi
 	rm composer-setup.php
 	sudo apt-get install redis-server -y || log_error "Unable to install redis"
@@ -313,7 +315,7 @@ function downloadMudpiCoreFiles()
 	git clone --depth 1 https://github.com/${repo} /tmp/mudpi_core || log_error "Unable to download core files from github"
 	sudo mv /tmp/mudpi_core $mudpi_dir/core || log_error "Unable to move Mudpi core to $mudpi_dir"
 	sudo chown -R $mudpi_user:$mudpi_user "$mudpi_dir" || log_error "Unable to set permissions in '$mudpi_dir'"
-	pip3 install -r $mudpi_dir/core/requirements.txt
+	sudo pip3 install -r $mudpi_dir/core/requirements.txt
 }
 
 # Fetches latest files from github
@@ -330,7 +332,7 @@ function downloadAssistantFiles()
 	log_info "Cloning latest assistant files from github"
 	git clone --depth 1 https://github.com/${repo_assistant} /tmp/mudpi_assistant || log_error "Unable to download assistant files from github"
 	sudo mv /tmp/mudpi_assistant $webroot_dir || log_error "Unable to move Mudpi to web root"
-	composer install -d${webroot_dir}/mudpi_assistant || log_error "Unable to run composer install"
+	composer update -d${webroot_dir}/mudpi_assistant || log_error "Unable to run composer install"
 	sudo chown -R $mudpi_user:$mudpi_user "${webroot_dir}/mudpi_assistant" || log_error "Unable to set permissions in '$webroot_dir'"
 	sudo find ${webroot_dir}/mudpi_assistant -type d -exec chmod 1755 {} + || log_error "Unable to set permissions in '$webroot_dir'"
 	sudo find ${webroot_dir}/mudpi_assistant -type f -exec chmod 1644 {} + || log_error "Unable to set permissions in '$webroot_dir'"
@@ -353,7 +355,7 @@ function downloadUIFiles()
 	git clone --depth 1 https://github.com/${repo_ui} /tmp/mudpi || log_error "Unable to download ui files from github"
 	sudo mv /tmp/mudpi $webroot_dir || log_error "Unable to move Mudpi UI to web root"
 	sleep 1
-	composer install -d ${webroot_dir}/mudpi || log_error "Unable to run composer install"
+	composer update -d ${webroot_dir}/mudpi || log_error "Unable to run composer install"
 	sudo chown -R $mudpi_user:$mudpi_user "${webroot_dir}/mudpi" || log_error "Unable to set permissions in '$webroot_dir'"
 	sudo find ${webroot_dir}/mudpi -type d -exec chmod 755 {} + || log_error "Unable to set permissions in '$webroot_dir'"
 	sudo find ${webroot_dir}/mudpi -type f -exec chmod 644 {} + || log_error "Unable to set permissions in '$webroot_dir'"
