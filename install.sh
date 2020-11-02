@@ -167,7 +167,9 @@ function installDependencies()
 	if [ "$rasp_version" -eq "9" ]; then
 		sudo sed -i 's/stretch/buster/g' /etc/apt/sources.list
 	fi
-	sudo add-apt-repository ppa:ondrej/php
+	sudo apt-get -y install apt-transport-https lsb-release ca-certificates curl
+	sudo curl -sSL -o /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+	sudo sh -c 'echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list'
 	sudo apt-get update
 	sudo apt-get dist-upgrade
 	sudo apt-get upgrade
